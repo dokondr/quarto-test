@@ -3,7 +3,6 @@
 title: "Quarto Basics"
 format:
   html:
-    highlight-style: null
     code-fold: true
 jupyter: python3
 ---
@@ -14,6 +13,8 @@ For a demonstration of a line plot on a polar axis, see @fig-polar.
 #| label: fig-polar
 #| fig-cap: "A line plot on a polar axis"
 
+```
+<pre>
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -26,4 +27,5 @@ ax.plot(theta, r)
 ax.set_rticks([0.5, 1, 1.5, 2])
 ax.grid(True)
 plt.show()
-```
+</pre>
+
