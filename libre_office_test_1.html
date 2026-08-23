@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.2.7.2 (Linux)"/>
+	<meta name="created" content="2026-08-23T16:08:21.231016591"/>
+	<meta name="changed" content="2026-08-23T16:20:37.389496600"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
+		h2 { margin-top: 0.14in; margin-bottom: 0.08in; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Sans", sans-serif; font-size: 16pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Sans CJK SC"; font-size: 16pt; font-weight: bold }
+		h2.ctl { font-family: "Noto Sans Devanagari"; font-size: 16pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><h2 class="western">
+This a test of inserting code block</h2>
+<p><br/>
+<br/>
+
+</p>
+<p>Is it possible to import this as html document into Medium?</p>
+<p><br/>
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in"><br/>
+
+</p>
+<pre class="western">def ask_llm(model, query:str, text:str = &quot;&quot;)-&gt;str:
+    client = Client(
+        host=&quot;https://ollama.com&quot;,
+        headers={'Authorization': 'Bearer ' + os.environ.get('OLLAMA_API_KEY')}
+    )
+    
+    messages = [
+      {
+        'role': 'user',
+        'content': query + '\n' +text, 
+      },
+    ]
+
+    output = io.StringIO()
+    for part in client.chat(model, messages=messages, stream=True):
+      # print(part['message']['content'], end='', flush=True)
+      print(part['message']['content'], end='', flush=True, file=output)
+
+    result = output.getvalue()
+    output.close()
+    return result
+
+and another longer text follows the above one:
+
+def create_ontology_instance(model, schema, text):
+
+    prompt = f&quot;&quot;&quot;
+    You are an information extraction system. 
+    Your task is to create ontology instance from the text bellow 
+    using provided ontology schema. 
+         
+    OUTPUT FORMAT (STRICT JSON)
+    
+    -------------------------
+    EXTRACTION RULES
+    -------------------------
+    
+    You MUST extract only what is explicitly or strongly implied in the text. 
+    Do not hallucinate entities or relationships.
+    
+    1. Do not invent entities not grounded in the text.
+    2. Preserve original wording when possible for names.
+    3. Merge duplicates (same concept = same node).
+    4. Abstract ideas clearly but minimally.
+    5. Keep descriptions concise and faithful.
+    6. If uncertain, prefer omission over speculation.
+    7. Relations must include source types, source names and target types, target names.
+
+    Return Json of the following format:
+    {{
+    &quot;nodes&quot;: [ 
+        {{
+          &quot;type&quot;: &quot;Idea&quot;, # or Medium, Source, Period, School, etc 
+          &quot;name&quot;: &quot;...&quot;,
+          &quot;description&quot;: &quot;...&quot;,
+          ...
+        }},
+        ...
+        {{
+          &quot;type&quot;: &quot;Medium&quot;,  
+          &quot;name&quot;: &quot;...&quot;,
+          &quot;description&quot;: &quot;...&quot;,
+          ...
+        }}
+        ...
+        {{
+          &quot;type&quot;: &quot;School&quot;, 
+          &quot;name&quot;: &quot;...&quot;,
+          &quot;description&quot;: &quot;...&quot;,
+          ...
+        }},
+        ...
+        {{
+          &quot;type&quot;: &quot;Period&quot;, 
+          &quot;name&quot;: &quot;...&quot;,
+          &quot;start_date&quot;: &quot;...&quot;,
+          &quot;end_date&quot;: &quot;...&quot;,
+          ...
+        {{
+          &quot;type&quot;: &quot;Source&quot;, 
+          &quot;name&quot;: &quot;...&quot;, # NOT TITLE 
+          &quot;description&quot;: &quot;...&quot;,
+          ...
+
+    ]
+    &quot;relations&quot;: [
+        {{
+        &quot;type&quot;: &quot;...&quot;
+        &quot;source_type&quot;: &lt;source type&gt;,
+        &quot;source_name&quot;: &lt;source name&gt;,
+        &quot;target_type&quot;: &lt;target type&gt;,
+        &quot;target_name&quot;: &lt;target name&gt;
+        }},
+        ...
+    ]
+    }}
+
+    Return description as a single text string, do not put it in any list!
+    Do not concatenate words with underscore (_) in relation types!
+    In 'Source' entity (node) use attribute 'name' insttead of 'title'! 
+    Return clean Json. Do not prefix your result with others text, 
+    such as &quot;```json&quot; or something else!   
+    
+    Ontology schema: 
+    {schema}
+    
+    Text:
+    {text}
+    
+    &quot;&quot;&quot;
+
+    return ask_llm(model, prompt)
+
+
+we will see how it works. It says that formating type is already selected.
+ 
+Now Jupyter lab output:
+
+
+*** Adding description to existant node: Idea: &quot;Arche&quot;
+*** Adding description to existant node: Idea: &quot;Logos&quot;
+*** Adding description to existant node: Idea: &quot;Nous&quot;
+*** Adding description to existant node: Idea: &quot;Atomism&quot;
+*** Adding description to existant node: Medium: &quot;Thales&quot;
+*** Adding description to existant node: Medium: &quot;Anaximander&quot;
+*** Adding description to existant node: Medium: &quot;Anaximenes&quot;
+*** Adding description to existant node: Medium: &quot;Xenophanes&quot;
+*** Adding description to existant node: Medium: &quot;Heraclitus&quot;
+*** Adding description to existant node: Medium: &quot;Pythagoras&quot;
+*** Adding description to existant node: Medium: &quot;Parmenides&quot;
+*** Adding description to existant node: Medium: &quot;Zeno of Elea&quot;
+*** Adding description to existant node: Medium: &quot;Anaxagoras&quot;
+*** Adding description to existant node: Medium: &quot;Empedocles&quot;
+*** Adding description to existant node: Medium: &quot;Leucippus&quot;
+*** Adding description to existant node: Medium: &quot;Democritus&quot;
+*** Adding description to existant node: Medium: &quot;Plato&quot;
+
+also already selected.
+</pre>
+</body>
+</html>
